@@ -17,12 +17,19 @@ contract FoodTraceability {
     mapping(uint256 => Product) public products;
 
     event ProductRegistered(
-            uint256 id,
-            string name,
-            string origin,
-            address owner,
-            uint timestamp
-        );   
+        uint256 id,
+        string name,
+        string origin,
+        address owner,
+        uint256 timestamp
+    );
+
+    event ProductTransferred(
+        uint256 id,
+        address previousOwner,
+        address newOwner,
+        uint256 timestamp
+    );
 
     function registerProduct(
         string memory _name,
@@ -49,6 +56,37 @@ contract FoodTraceability {
         );
     }
 
-}
+    function transferProduct(
+        uint256 _id,
+        address _newOwner
+    ) public {
 
-    
+        require(
+            _id > 0 && _id <= productCount,
+            "Product does not exist"
+        );
+
+        Product storage product = products[_id];
+
+        require(
+            msg.sender == product.currentOwner,
+            "Only current owner can transfer product"
+        );
+
+        require(
+            _newOwner != address(0),
+            "Invalid receiver address"
+        );
+
+        address previousOwner = product.currentOwner;
+
+        product.currentOwner = _newOwner;
+
+        emit ProductTransferred(
+            _id,
+            previousOwner,
+            _newOwner,
+            block.timestamp
+        );
+    }
+}
