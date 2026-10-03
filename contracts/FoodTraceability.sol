@@ -31,6 +31,13 @@ contract FoodTraceability {
         uint256 timestamp
     );
 
+    event StatusUpdated(
+        uint256 id,
+        string newStatus,
+        address updatedBy,
+        uint256 timestamp
+    );
+
     function registerProduct(
         string memory _name,
         string memory _origin
@@ -87,6 +94,62 @@ contract FoodTraceability {
             previousOwner,
             _newOwner,
             block.timestamp
+        );
+    }
+
+    function updateStatus(
+        uint256 _id,
+        string memory _newStatus
+    ) public {
+
+        require(
+            _id > 0 && _id <= productCount,
+            "Product does not exist"
+        );
+
+        Product storage product = products[_id];
+
+        require(
+            msg.sender == product.currentOwner,
+            "Only current owner can update status"
+        );
+
+        product.status = _newStatus;
+        product.timestamp = block.timestamp;
+
+        emit StatusUpdated(
+            _id,
+            _newStatus,
+            msg.sender,
+            block.timestamp
+        );
+    }
+
+    function getProduct(
+        uint256 _id
+    ) public view returns (
+        uint256,
+        string memory,
+        string memory,
+        address,
+        string memory,
+        uint256
+    ) {
+
+        require(
+            _id > 0 && _id <= productCount,
+            "Product does not exist"
+        );
+
+        Product memory product = products[_id];
+
+        return (
+            product.id,
+            product.name,
+            product.origin,
+            product.currentOwner,
+            product.status,
+            product.timestamp
         );
     }
 }
