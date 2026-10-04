@@ -39,6 +39,30 @@ The smart contract will provide the following main functions:
 - updateStatus()
 - getProduct()
 
+## Local Blockchain Testing with Ganache
+
+BlockTrace was tested using Ganache as a local Ethereum blockchain.
+
+### Configuration
+- Ganache CLI: v7.9.2
+- RPC URL: http://127.0.0.1:8545
+- Chain ID: 1337
+- Development Environment: Remix IDE
+- Smart Contract: FoodTraceability.sol
+
+### Supply Chain Test
+
+The smart contract was tested through the complete product lifecycle:
+
+1. Farmer registered "Organic Coffee" with origin "Brazil".
+2. Farmer updated the product status to "Harvested".
+3. Ownership was transferred from the Farmer to the Distributor.
+4. Distributor updated the status to "In Transit".
+5. Ownership was transferred from the Distributor to the Retailer.
+6. Retailer updated the final status to "Available for Sale".
+
+The test confirmed that only the current owner could transfer the product or update its status.
+
 ## Project Status
 
 Development in progress.
